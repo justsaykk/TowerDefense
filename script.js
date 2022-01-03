@@ -62,6 +62,16 @@ canvas.addEventListener('mouseleave', () => {
     mouse.y = undefined;
 })
 
+
+
+
+// projectiles
+// defenders
+// enemies
+//resources
+/* Utilities */
+
+// Collision Function //
 const isCollision = (first, second) => {
     if (    !(  first.x > second.x + second.width ||
                 first.x + first.width < second.x ||
@@ -71,13 +81,9 @@ const isCollision = (first, second) => {
         return true;
     }
 }
+/////
 
 
-// projectiles
-// defenders
-// enemies
-//resources
-// utilities
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue';
@@ -85,5 +91,4 @@ const animate = () => {
     handleGameGrid();
     requestAnimationFrame(animate);
 }
-
 animate(); 
