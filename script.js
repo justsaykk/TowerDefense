@@ -21,16 +21,18 @@ class Cell {
         this.width = cellSize;
         this.height = cellSize;
     }
-    draw(){
-        ctx.strokeStyle = 'black';
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
+    draw(){ // Setting up the highlighting of cells
+        if (mouse.x && mouse.y && isCollision(this, mouse)) {
+            ctx.strokeStyle = 'black';
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+        }
     }
 }
 
 const createGrid = () => {
-    for (let i = cellSize; i < canvas.height; i += cellSize) {
-        for (let j = 0; j < canvas.width; j += cellSize) {
-            gameGrid.push(new Cell(j, i));
+    for (let y = cellSize; y < canvas.height; y += cellSize) {
+        for (let x = 0; x < canvas.width; x += cellSize) {
+            gameGrid.push(new Cell(x, y));
         }
     }
 }
@@ -42,6 +44,34 @@ const handleGameGrid = () => {
     }
 }
 
+// mouse
+const mouse = {
+    x: undefined,
+    y: undefined,
+    width: 0.1,
+    height: 0.1,
+}
+
+let canvasPosition = canvas.getBoundingClientRect();
+canvas.addEventListener('mousemove', e => {
+    mouse.x = e.x - canvasPosition.left;
+    mouse.y = e.y - canvasPosition.top;
+});
+canvas.addEventListener('mouseleave', () => {
+    mouse.x = undefined;
+    mouse.y = undefined;
+})
+
+const isCollision = (first, second) => {
+    if (    !(  first.x > second.x + second.width ||
+                first.x + first.width < second.x ||
+                first.y > second.y + second.height ||
+                first.y + first.height < second.y)
+    ) {
+        return true;
+    }
+}
+
 
 // projectiles
 // defenders
@@ -49,8 +79,9 @@ const handleGameGrid = () => {
 //resources
 // utilities
 const animate = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue';
-    ctx.fillRect(0,0,controlsBar.width,controlsBar.height);
+    ctx.fillRect(0, 0,controlsBar.width,controlsBar.height);
     handleGameGrid();
     requestAnimationFrame(animate);
 }
