@@ -6,15 +6,17 @@ canvas.height = 600;
 // Global Variables
 const cellSize = 100;
 const cellGap = 3;
-const gameGrid = [];
-const defenders = [];
 let defenderCost = 100;
+let frame = 0;
 let numberOfResources = 500;
-const enemies = [];
-const enemyPositions = [];
 let enemiesInterval = 600;
 let gameOver = false;
-let frame = 0;
+const gameGrid = [];
+const defenders = [];
+const enemies = [];
+const enemyPositions = [];
+const projectiles = [];
+
 
 // mouse
 const mouse = {
@@ -117,7 +119,7 @@ const handleDefenders = () => {
         for (let j = 0; j < enemies.length; j++){
             if (isCollision(defenders[i], enemies[j])){
                 enemies[j].movement = 0;
-                defenders[i].health -= 0.2;
+                defenders[i].health -= 0.5;
             }
             if (defenders[i] && defenders[i].health <= 0){
                 defenders.splice(i, 1);
