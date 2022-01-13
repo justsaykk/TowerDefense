@@ -44,13 +44,13 @@ const controlsBar = {
 }
 
 class Cell {
-    constructor(x, y){
+    constructor(x, y) {
         this.x = x;
         this.y = y;
         this.width = cellSize;
         this.height = cellSize;
     }
-    draw(){ // Setting up the highlighting of cells
+    draw() { // Setting up the highlighting of cells
         if (mouse.x && mouse.y && isCollision(this, mouse)) {
             ctx.strokeStyle = 'black';
             ctx.strokeRect(this.x, this.y, this.width, this.height);
@@ -75,7 +75,7 @@ const handleGameGrid = () => {
 
 // projectiles
 class Projectiles {
-    constructor(x, y){
+    constructor(x, y) {
         this.x = x;
         this.y = y;
         this.width = 10;
@@ -83,10 +83,10 @@ class Projectiles {
         this.power = 20;
         this.speed = 10;
     }
-    update(){
+    update() {
         this.x += this.speed;
     }
-    draw(){
+    draw() {
         ctx.fillStyle = 'black';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
@@ -95,7 +95,7 @@ class Projectiles {
 }
 
 const handleProjectiles = () => {
-    for (let i = 0; i < projectiles.length; i++){
+    for (let i = 0; i < projectiles.length; i++) {
         projectiles[i].update();
         projectiles[i].draw();
 
@@ -116,7 +116,7 @@ const handleProjectiles = () => {
 
 // defenders
 class Defender {
-    constructor(x,y){
+    constructor(x, y) {
         this.x = x;
         this.y = y;
         this.width = cellSize;
@@ -127,7 +127,7 @@ class Defender {
         this.timer = 0;
     }
 
-    draw(){
+    draw() {
         ctx.fillStyle = 'blue';
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fillStyle = 'gold';
@@ -136,8 +136,12 @@ class Defender {
     }
     update() {
         this.timer++;
-        if (this.timer % 100 === 0) {
-            projectiles.push(new Projectiles(this.x + 70, this.y + 50));
+        if (this.shoot === true) {
+            if (this.timer % 100 === 0) {
+                projectiles.push(new Projectiles(this.x + 70, this.y + 50));
+            }
+        } else {
+            this.timer = 0;
         }
     }
 }
@@ -148,7 +152,7 @@ canvas.addEventListener('click', e => {
     if (gridPositionY < cellSize) { // Error handler if user clicks on HUD
         return;
     }
-    for (let i = 0; i < defenders.length; i++){ // Check that clicked spot do not have an existing defender
+    for (let i = 0; i < defenders.length; i++) { // Check that clicked spot do not have an existing defender
         if (defenders[i].x === gridPositionX && defenders[i].y === gridPositionY) {
             return;
         }
@@ -164,12 +168,19 @@ const handleDefenders = () => {
     for (let i = 0; i < defenders.length; i++) {
         defenders[i].draw();
         defenders[i].update();
-        for (let j = 0; j < enemies.length; j++){
-            if (defenders[i] && isCollision(defenders[i], enemies[j])){
+
+        if (enemyPositions.indexOf(defenders[i].y) !== -1) {
+            defenders[i].shoot = true;
+        } else {
+            defenders[i].shoot = false;
+        }
+
+        for (let j = 0; j < enemies.length; j++) {
+            if (defenders[i] && isCollision(defenders[i], enemies[j])) {
                 enemies[j].movement = 0;
                 defenders[i].health -= 0.5;
             }
-            if (defenders[i] && defenders[i].health <= 0){
+            if (defenders[i] && defenders[i].health <= 0) {
                 defenders.splice(i, 1);
                 i--;
                 enemies[j].movement = enemies[j].speed;
@@ -181,7 +192,7 @@ const handleDefenders = () => {
 
 // enemies
 class Enemy {
-    constructor(verticalPosition){
+    constructor(verticalPosition) {
         this.x = canvas.width;
         this.y = verticalPosition;
         this.width = cellSize;
@@ -191,10 +202,10 @@ class Enemy {
         this.health = 100;
         this.maxHealth = this.health;
     }
-    update(){
+    update() {
         this.x -= this.movement;
     }
-    draw(){
+    draw() {
         ctx.fillStyle = 'red';
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fillStyle = 'black';
@@ -207,23 +218,25 @@ const handleEnemies = () => {
     for (let i = 0; i < enemies.length; i++) {
         enemies[i].update();
         enemies[i].draw();
-        if (enemies[i].x < 0){
+        if (enemies[i].x < 0) {
             gameOver = true;
         }
         if (enemies[i].health <= 0) {
-            let gainedResources = enemies[i].maxHealth/2;
+            let gainedResources = enemies[i].maxHealth / 2;
             score += gainedResources;
             numberOfResources += gainedResources;
+            const getIndex = enemyPositions.indexOf(enemies[i].y);
+            enemyPositions.splice(getIndex, 1)
             enemies.splice(i, 1);
-            i--; 
+            i--;
         }
     }
     if (frame % enemiesInterval === 0) {
-        let verticalPosition = Math.floor(Math.random() * 5 + 1) * cellSize;
+        let verticalPosition = Math.floor(Math.random() * 5 + 1) * cellSize; // Enemy Spawn Location
         enemies.push(new Enemy(verticalPosition))
         enemyPositions.push(verticalPosition);
         if (enemiesInterval > 120) enemiesInterval -= 100;
-    }
+        }
 }
 
 // resources
@@ -240,10 +253,10 @@ const handleGameStatus = () => {
 
 // Collision Function //
 const isCollision = (first, second) => {
-    if (    !(  first.x > second.x + second.width ||
-                first.x + first.width < second.x ||
-                first.y > second.y + second.height ||
-                first.y + first.height < second.y)
+    if (!(first.x > second.x + second.width ||
+        first.x + first.width < second.x ||
+        first.y > second.y + second.height ||
+        first.y + first.height < second.y)
     ) {
         return true;
     }
@@ -254,7 +267,7 @@ const isCollision = (first, second) => {
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue';
-    ctx.fillRect(0, 0,controlsBar.width,controlsBar.height);
+    ctx.fillRect(0, 0, controlsBar.width, controlsBar.height);
     handleGameGrid();
     handleDefenders();
     handleProjectiles();
