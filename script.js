@@ -5,7 +5,7 @@ canvas.height = 600;
 
 // Global Variables
 const cellSize = 100;
-const cellGap = 3;
+const cellGap = 1;
 let defenderCost = 100;
 let frame = 0;
 let numberOfResources = 500;
@@ -119,8 +119,8 @@ class Defender {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.width = cellSize;
-        this.height = cellSize;
+        this.width = cellSize - cellGap * 2;
+        this.height = cellSize - cellGap * 2;
         this.shoot = false;
         this.health = 100;
         this.projectiles = [];
@@ -147,8 +147,8 @@ class Defender {
 }
 
 canvas.addEventListener('click', e => {
-    const gridPositionX = mouse.x - (mouse.x % cellSize);
-    const gridPositionY = mouse.y - (mouse.y % cellSize);
+    const gridPositionX = mouse.x - (mouse.x % cellSize) + cellGap;
+    const gridPositionY = mouse.y - (mouse.y % cellSize) + cellGap;
     if (gridPositionY < cellSize) { // Error handler if user clicks on HUD
         return;
     }
@@ -195,8 +195,8 @@ class Enemy {
     constructor(verticalPosition) {
         this.x = canvas.width;
         this.y = verticalPosition;
-        this.width = cellSize;
-        this.height = cellSize;
+        this.width = cellSize - cellGap * 2;
+        this.height = cellSize - cellGap * 2;
         this.speed = Math.random() * 2 + 0.4;
         this.movement = this.speed;
         this.health = 100;
@@ -232,14 +232,13 @@ const handleEnemies = () => {
         }
     }
     if (frame % enemiesInterval === 0) {
-        let verticalPosition = Math.floor(Math.random() * 5 + 1) * cellSize; // Enemy Spawn Location
+        let verticalPosition = Math.floor(Math.random() * 5 + 1) * cellSize + cellGap; // Enemy Spawn Location
         enemies.push(new Enemy(verticalPosition))
         enemyPositions.push(verticalPosition);
         if (enemiesInterval > 120) enemiesInterval -= 100;
         }
 }
 
-// resources
 // Utilities
 const handleGameStatus = () => {
     ctx.fillStyle = 'gold';
@@ -247,9 +246,14 @@ const handleGameStatus = () => {
     ctx.fillText("Resources: " + numberOfResources, 20, 80);
     ctx.fillText("Score: " + score, 20, 40);
     if (gameOver === true) {
-        alert("GAME OVER");
+        alert("GAME OVER!");
+        alert(`Your Score is ${score}`)
     }
 }
+
+window.addEventListener('resize', () => {
+    canvasPosition = canvas.getBoundingClientRect();
+})
 
 // Collision Function //
 const isCollision = (first, second) => {
