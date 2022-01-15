@@ -178,7 +178,7 @@ const handleDefenders = () => {
         for (let j = 0; j < enemies.length; j++) {
             if (defenders[i] && isCollision(defenders[i], enemies[j])) {
                 enemies[j].movement = 0;
-                defenders[i].health -= 0.5;
+                defenders[i].health -= 0.2;
             }
             if (defenders[i] && defenders[i].health <= 0) {
                 defenders.splice(i, 1);
