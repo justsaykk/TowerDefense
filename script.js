@@ -74,23 +74,31 @@ const handleGameGrid = () => {
 }
 
 // projectiles
+const defenderBullet = new Image();
+defenderBullet.src = "Pixel Alien/1. Game Characters/Defender Spritesheet/Defender Bullet.png";
+
 class Projectiles {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.width = 10;
-        this.height = 10;
+        this.width = 30;
+        this.height = 30;
         this.power = 20;
         this.speed = 10;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.minFrame = 0;
+        this.maxFrame = 12;
+        this.spriteHeight = 64;
+        this.spriteWidth = 64;
     }
     update() {
         this.x += this.speed;
     }
     draw() {
-        ctx.fillStyle = 'black';
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.drawImage(defenderBullet, this.frameX * this.spriteWidth, 0,
+            this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height)
     }
 }
 
@@ -115,6 +123,10 @@ const handleProjectiles = () => {
 }
 
 // defenders
+const defenderIdle = new Image();
+defenderIdle.src = "Pixel Alien/1. Game Characters/Defender Spritesheet/Defender_idle.png";
+const defenderShooting = new Image();
+defenderShooting.src = "Pixel Alien/1. Game Characters/Defender Spritesheet/Defender_shoot.png"
 class Defender {
     constructor(x, y) {
         this.x = x;
@@ -125,20 +137,44 @@ class Defender {
         this.health = 100;
         this.projectiles = [];
         this.timer = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.minFrame = 0;
+        this.maxFrame = 12;
+        this.spriteHeight = 192;
+        this.spriteWidth = 192;
     }
 
     draw() {
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = 'gold';
-        ctx.font = '20px Arial';
-        ctx.fillText(Math.floor(this.health), this.x + 15, this.y + 25);
+        ctx.drawImage(defenderIdle, 
+            this.frameX * this.spriteWidth, 
+            0,
+            this.spriteWidth, 
+            this.spriteHeight, 
+            this.x, this.y, 
+            this.width, this.height)
+
+        if (this.health === 100) {
+            return;
+        } else {
+            ctx.fillStyle = 'gold';
+            ctx.font = '20px Arial';
+            ctx.fillText(Math.floor(this.health), this.x + 15, this.y + 25);
+        }
+        
     }
     update() {
         this.timer++;
+        if (frame % 4 === 0) {
+            if (this.frameX < this.maxFrame) {
+                this.frameX++;
+            } else {
+                this.frameX = this.minFrame;
+            }
+        }
         if (this.shoot === true) {
             if (this.timer % 100 === 0) {
-                projectiles.push(new Projectiles(this.x + 70, this.y + 50));
+                projectiles.push(new Projectiles(this.x + 70, this.y + 30));
             }
         } else {
             this.timer = 0;
@@ -191,6 +227,10 @@ const handleDefenders = () => {
 
 
 // enemies
+const enemyRun = new Image();
+enemyRun.src = "Pixel Alien/1. Game Characters/Enemies Spritesheet/enemies_run.png";
+const enemyDie = new Image();
+enemyDie.src = "Pixel Alien/1. Game Characters/Enemies Spritesheet/enemies_die.png"
 class Enemy {
     constructor(verticalPosition) {
         this.x = canvas.width;
@@ -201,16 +241,33 @@ class Enemy {
         this.movement = this.speed;
         this.health = 100;
         this.maxHealth = this.health;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.minFrame = 0;
+        this.maxFrame = 7;
+        this.spriteHeight = 192;
+        this.spriteWidth = 192;
     }
     update() {
         this.x -= this.movement;
+        ctx.drawImage(enemyRun, this.frameX * this.spriteWidth, 0,
+            this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height)
     }
     draw() {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = 'black';
-        ctx.font = '30px Arial';
-        ctx.fillText(Math.floor(this.health), this.x + 15, this.y + 30);
+        if (frame % 4 === 0) {
+            if (this.frameX < this.maxFrame) {
+                this.frameX++;
+            } else {
+                this.frameX = this.minFrame;
+            }
+        }
+        if (this.health === 100) {
+            return;
+        } else {
+            ctx.fillStyle = 'red';
+            ctx.font = '20px Arial';
+            ctx.fillText(Math.floor(this.health), this.x + 15, this.y + 30);
+        }
     }
 }
 
@@ -236,7 +293,7 @@ const handleEnemies = () => {
         enemies.push(new Enemy(verticalPosition))
         enemyPositions.push(verticalPosition);
         if (enemiesInterval > 120) enemiesInterval -= 100;
-        }
+    }
 }
 
 // Utilities
@@ -270,8 +327,8 @@ const isCollision = (first, second) => {
 
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(0, 0, controlsBar.width, controlsBar.height);
+    // ctx.fillStyle = 'blue';
+    // ctx.fillRect(0, 0, controlsBar.width, controlsBar.height);
     handleGameGrid();
     handleDefenders();
     handleProjectiles();
