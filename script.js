@@ -75,7 +75,7 @@ const handleGameGrid = () => {
 
 // projectiles
 const defenderBullet = new Image();
-defenderBullet.src = "Pixel Alien/1. Game Characters/Defender Spritesheet/Defender Bullet.png";
+defenderBullet.src = "PixelAlien/1.GameCharacters/DefenderSpritesheet/DefenderBullet.png";
 
 class Projectiles {
     constructor(x, y) {
@@ -124,9 +124,9 @@ const handleProjectiles = () => {
 
 // defenders
 const defenderIdle = new Image();
-defenderIdle.src = "Pixel Alien/1. Game Characters/Defender Spritesheet/Defender_idle.png";
+defenderIdle.src = "PixelAlien/1.GameCharacters/DefenderSpritesheet/Defender_idle.png";
 const defenderShooting = new Image();
-defenderShooting.src = "Pixel Alien/1. Game Characters/Defender Spritesheet/Defender_shoot.png"
+defenderShooting.src = "PixelAlien/1.GameCharacters/DefenderSpritesheet/Defender_shoot.png"
 class Defender {
     constructor(x, y) {
         this.x = x;
@@ -228,9 +228,9 @@ const handleDefenders = () => {
 
 // enemies
 const enemyRun = new Image();
-enemyRun.src = "Pixel Alien/1. Game Characters/Enemies Spritesheet/enemies_run.png";
+enemyRun.src = "PixelAlien/1.GameCharacters/EnemiesSpritesheet/enemies_run.png";
 const enemyDie = new Image();
-enemyDie.src = "Pixel Alien/1. Game Characters/Enemies Spritesheet/enemies_die.png"
+enemyDie.src = "PixelAlien/1.Game Characters/EnemiesSpritesheet/enemies_die.png"
 class Enemy {
     constructor(verticalPosition) {
         this.x = canvas.width;
