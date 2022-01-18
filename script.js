@@ -154,7 +154,7 @@ class Defender {
             this.x, this.y,
             this.width, this.height)
 
-        if (this.health === 100) {                                                  // Hide health if its full (reduce screen clutter)
+        if (this.health === 100) {                                                      // Hide health if its full (reduce screen clutter)
             return;
         } else {
             ctx.fillStyle = 'gold';
@@ -174,7 +174,7 @@ class Defender {
             }
         }
         if (this.shoot === true) {
-            if (this.timer % Math.floor((100 + (defPopulation ** 1.5))) === 0) {            // More defender = slower shooting
+            if (this.timer % Math.floor((100 + (defPopulation ** 1.5))) === 0) {      // More defender = slower shooting
                 projectiles.push(new Projectiles(this.x + 70, this.y + 30));
             }
         } else {
@@ -313,7 +313,7 @@ window.addEventListener('resize', () => {
     canvasPosition = canvas.getBoundingClientRect();
 })
 
-// collision Function //
+// collision Function
 const collision = (first, second) => {
     if (!(first.x > second.x + second.width ||  // first element is on the right side of the second element
         first.x + first.width < second.x ||     // first element is on the left of the second element
