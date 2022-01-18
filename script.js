@@ -9,7 +9,7 @@ const cellGap = 1;
 let defenderCost = 100;
 let frame = 0;
 let numberOfResources = 500;
-let enemiesInterval = 600;
+let enemiesInterval = 1000;
 let score = 0;
 let gameOver = false;
 const gameGrid = [];
@@ -50,8 +50,8 @@ class Cell {
         this.width = cellSize;
         this.height = cellSize;
     }
-    draw() { // Setting up the highlighting of cells
-        if (mouse.x && mouse.y && isCollision(this, mouse)) {
+    draw() {                                                                                    // Setting up the highlighting of cells
+        if (mouse.x && mouse.y && collision(this, mouse)) {
             ctx.strokeStyle = 'black';
             ctx.strokeRect(this.x, this.y, this.width, this.height);
         }
@@ -108,7 +108,7 @@ const handleProjectiles = () => {
         projectiles[i].draw();
 
         for (let j = 0; j < enemies.length; j++) {
-            if (enemies[j] && projectiles[i] && isCollision(projectiles[i], enemies[j])) {
+            if (enemies[j] && projectiles[i] && collision(projectiles[i], enemies[j])) {
                 enemies[j].health -= projectiles[i].power;
                 projectiles.splice(i, 1);
                 i--;
@@ -125,8 +125,7 @@ const handleProjectiles = () => {
 // defenders
 const defenderIdle = new Image();
 defenderIdle.src = "pixelalien/gamecharacters/defenderspritesheet/defenderidle.png";        // 13 frames
-const defenderShooting = new Image();
-defenderShooting.src = "pixelalien/gamecharacters/defenderspritesheet/defendershoot.png"    // 4 frames
+
 class Defender {
     constructor(x, y) {
         this.x = x;
@@ -147,12 +146,12 @@ class Defender {
     }
 
     draw() {
-        ctx.drawImage(defenderIdle, 
-            this.frameX * this.spriteWidth, 
+        ctx.drawImage(defenderIdle,
+            this.frameX * this.spriteWidth,
             0,
-            this.spriteWidth, 
-            this.spriteHeight, 
-            this.x, this.y, 
+            this.spriteWidth,
+            this.spriteHeight,
+            this.x, this.y,
             this.width, this.height)
 
         if (this.health === 100) {
@@ -162,10 +161,11 @@ class Defender {
             ctx.font = '20px Arial';
             ctx.fillText(Math.floor(this.health), this.x + 15, this.y + 25);
         }
-        
+
     }
     update() {
         this.timer++;
+        let defPopulation = defenders.length;
         if (frame % 4 === 0) {
             if (this.frameX < this.maxFrame) {
                 this.frameX++;
@@ -174,7 +174,7 @@ class Defender {
             }
         }
         if (this.shoot === true) {
-            if (this.timer % 100 === 0) {
+            if (this.timer % Math.floor((100 + (defPopulation ** 1.5))) === 0) {
                 projectiles.push(new Projectiles(this.x + 70, this.y + 30));
             }
         } else {
@@ -186,10 +186,10 @@ class Defender {
 canvas.addEventListener('click', e => {
     const gridPositionX = mouse.x - (mouse.x % cellSize) + cellGap;
     const gridPositionY = mouse.y - (mouse.y % cellSize) + cellGap;
-    if (gridPositionY < cellSize) { // Error handler if user clicks on HUD
+    if (gridPositionY < cellSize) {                                                 // Error handler if user clicks on HUD
         return;
     }
-    for (let i = 0; i < defenders.length; i++) { // Check that clicked spot do not have an existing defender
+    for (let i = 0; i < defenders.length; i++) {                                    // Check that clicked spot do not have an existing defender
         if (defenders[i].x === gridPositionX && defenders[i].y === gridPositionY) {
             return;
         }
@@ -213,9 +213,9 @@ const handleDefenders = () => {
         }
 
         for (let j = 0; j < enemies.length; j++) {
-            if (defenders[i] && isCollision(defenders[i], enemies[j])) {
+            if (defenders[i] && collision(defenders[i], enemies[j])) {
                 enemies[j].movement = 0;
-                defenders[i].health -= 0.2;
+                defenders[i].health -= 0.1;
             }
             if (defenders[i] && defenders[i].health <= 0) {
                 defenders.splice(i, 1);
@@ -230,8 +230,7 @@ const handleDefenders = () => {
 // enemies
 const enemyRun = new Image();
 enemyRun.src = "pixelalien/gamecharacters/enemiesspritesheet/enemies_run.png";
-const enemyDie = new Image();
-enemyDie.src = "pixelalien/gamecharacters/enemiesspritesheet/enemies_die.png"
+
 class Enemy {
     constructor(verticalPosition) {
         this.x = canvas.width;
@@ -250,7 +249,7 @@ class Enemy {
         this.spriteWidth = 192;
     }
     update() {
-        this.x -= this.movement;
+        this.x -= this.movement;                                                        // Enemies going to move from right to left
         ctx.drawImage(enemyRun, this.frameX * this.spriteWidth, 0,
             this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height)
     }
@@ -290,10 +289,12 @@ const handleEnemies = () => {
         }
     }
     if (frame % enemiesInterval === 0) {
-        let verticalPosition = Math.floor(Math.random() * 5 + 1) * cellSize + cellGap; // Enemy Spawn Location
-        enemies.push(new Enemy(verticalPosition))
+        let verticalPosition = Math.floor(Math.random() * 5 + 1) * cellSize + cellGap;  // Enemy Spawn Location
+        enemies.push(new Enemy(verticalPosition));
         enemyPositions.push(verticalPosition);
-        if (enemiesInterval > 120) enemiesInterval -= 100;
+        if (enemiesInterval >= 100) {
+            enemiesInterval -= 50;
+        }
     }
 }
 
@@ -304,8 +305,7 @@ const handleGameStatus = () => {
     ctx.fillText("Resources: " + numberOfResources, 20, 80);
     ctx.fillText("Score: " + score, 20, 40);
     if (gameOver === true) {
-        alert("GAME OVER!");
-        alert(`Your Score is ${score}`)
+        alert(`GAME OVER! Your Score is ${score}`);
     }
 }
 
@@ -313,8 +313,8 @@ window.addEventListener('resize', () => {
     canvasPosition = canvas.getBoundingClientRect();
 })
 
-// Collision Function //
-const isCollision = (first, second) => {
+// collision Function //
+const collision = (first, second) => {
     if (!(first.x > second.x + second.width ||  // first element is on the right side of the second element
         first.x + first.width < second.x ||     // first element is on the left of the second element
         first.y > second.y + second.height ||   // first element is on top of the second element
@@ -328,8 +328,6 @@ const isCollision = (first, second) => {
 
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // ctx.fillStyle = 'blue';
-    // ctx.fillRect(0, 0, controlsBar.width, controlsBar.height);
     handleGameGrid();
     handleDefenders();
     handleProjectiles();
