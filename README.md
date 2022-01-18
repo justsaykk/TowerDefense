@@ -33,8 +33,6 @@ All of the classes has a draw function and an update function.
 Outside of these classes, there are handler functions. These handler functions are calling back the draw and/or the update functions. 
 
 
-
-
 Files:
 1) index.html [ Just holding a canvas ]
 2) script.js [ Bulk of game logic & canvas manipulation ]

@@ -154,7 +154,7 @@ class Defender {
             this.x, this.y,
             this.width, this.height)
 
-        if (this.health === 100) {
+        if (this.health === 100) {                                                  // Hide health if its full (reduce screen clutter)
             return;
         } else {
             ctx.fillStyle = 'gold';
@@ -174,7 +174,7 @@ class Defender {
             }
         }
         if (this.shoot === true) {
-            if (this.timer % Math.floor((100 + (defPopulation ** 1.5))) === 0) {
+            if (this.timer % Math.floor((100 + (defPopulation ** 1.5))) === 0) {            // More defender = slower shooting
                 projectiles.push(new Projectiles(this.x + 70, this.y + 30));
             }
         } else {
@@ -261,7 +261,7 @@ class Enemy {
                 this.frameX = this.minFrame;
             }
         }
-        if (this.health === 100) {
+        if (this.health === 100) {                                                     // Hide health if its full (reduce screen clutter)
             return;
         } else {
             ctx.fillStyle = 'red';
