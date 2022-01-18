@@ -124,9 +124,9 @@ const handleProjectiles = () => {
 
 // defenders
 const defenderIdle = new Image();
-defenderIdle.src = "pixelalien/gamecharacters/defenderspritesheet/defenderidle.png";
+defenderIdle.src = "pixelalien/gamecharacters/defenderspritesheet/defenderidle.png";        // 13 frames
 const defenderShooting = new Image();
-defenderShooting.src = "pixelalien/gamecharacters/defenderspritesheet/defendershoot.png"
+defenderShooting.src = "pixelalien/gamecharacters/defenderspritesheet/defendershoot.png"    // 4 frames
 class Defender {
     constructor(x, y) {
         this.x = x;
@@ -134,6 +134,7 @@ class Defender {
         this.width = cellSize - cellGap * 2;
         this.height = cellSize - cellGap * 2;
         this.shoot = false;
+        this.shootNow = false;
         this.health = 100;
         this.projectiles = [];
         this.timer = 0;
@@ -314,12 +315,12 @@ window.addEventListener('resize', () => {
 
 // Collision Function //
 const isCollision = (first, second) => {
-    if (!(first.x > second.x + second.width ||
-        first.x + first.width < second.x ||
-        first.y > second.y + second.height ||
-        first.y + first.height < second.y)
+    if (!(first.x > second.x + second.width ||  // first element is on the right side of the second element
+        first.x + first.width < second.x ||     // first element is on the left of the second element
+        first.y > second.y + second.height ||   // first element is on top of the second element
+        first.y + first.height < second.y)      // first element is below second element
     ) {
-        return true;
+        return true;                            // with the "!" operator at the front, return true if the conditions (on top) are all not met
     }
 }
 /////
