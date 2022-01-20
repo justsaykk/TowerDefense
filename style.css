@@ -3,7 +3,7 @@ body {
 }
 
 #canvas1 {
-    background: url("pixelalien/gamebackgrounds/theme1-bg-1920x1080.jpg");
+    background: url("pixelalien/background.jpg");
     position: absolute;
     top: 50%;
     left: 50%;

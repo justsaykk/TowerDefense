@@ -75,7 +75,7 @@ const handleGameGrid = () => {
 
 // projectiles
 const defenderBullet = new Image();
-defenderBullet.src = "pixelalien/gamecharacters/defenderspritesheet/defenderbullet.png";
+defenderBullet.src = "pixelalien/bullet.png";
 
 class Projectiles {
     constructor(x, y) {
@@ -124,7 +124,7 @@ const handleProjectiles = () => {
 
 // defenders
 const defenderIdle = new Image();
-defenderIdle.src = "pixelalien/gamecharacters/defenderspritesheet/defenderidle.png";        // 13 frames
+defenderIdle.src = "pixelalien/defender.png";        // 13 frames
 
 class Defender {
     constructor(x, y) {
@@ -229,7 +229,7 @@ const handleDefenders = () => {
 
 // enemies
 const enemyRun = new Image();
-enemyRun.src = "pixelalien/gamecharacters/enemiesspritesheet/enemies_run.png";
+enemyRun.src = "pixelalien/enemy.png";
 
 class Enemy {
     constructor(verticalPosition) {
